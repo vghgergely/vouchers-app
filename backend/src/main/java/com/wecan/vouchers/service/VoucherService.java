@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.wecan.vouchers.entity.Voucher;
 import com.wecan.vouchers.entity.Voucher.VoucherStatus;
+import com.wecan.vouchers.exceptions.VoucherAlreadyExistsException;
+import com.wecan.vouchers.exceptions.VoucherAlreadyRedeemedException;
 import com.wecan.vouchers.exceptions.VoucherException;
+import com.wecan.vouchers.exceptions.VoucherExpiredException;
+import com.wecan.vouchers.exceptions.VoucherNotFoundException;
 import com.wecan.vouchers.repository.VoucherRepository;
 
 @Service
@@ -16,6 +20,9 @@ public class VoucherService {
     private VoucherRepository voucherRepository;
 
     public Voucher createVoucher(Voucher voucher) {
+        if (voucherRepository.existsByCode(voucher.getCode())) {
+            throw new VoucherAlreadyExistsException(voucher.getCode());
+        }
         return voucherRepository.save(voucher);
     }
 
@@ -23,19 +30,22 @@ public class VoucherService {
         return voucherRepository.findByCode(code);
     }
 
-    public void redeemVoucher(String code) throws VoucherException {
+    public Voucher redeemVoucher(String code) throws VoucherException {
         Optional<Voucher> voucher = getVoucher(code);
         if (voucher.isEmpty()) {
-            throw new VoucherException("Voucher not found");
+            throw new VoucherNotFoundException(code);
         }
         Voucher voucherObject = voucher.get();
+        if (voucherObject.isExpired()) {
+            throw new VoucherExpiredException(code);
+        }
         if (!voucherObject.isRedeemable()) {
-            throw new VoucherException("Voucher already redeemed");
+            throw new VoucherAlreadyRedeemedException(code);
         }
         voucherObject.setRedemptionCount(voucherObject.getRedemptionCount() + 1);
         if (voucherObject.getRedemptionCount() == voucherObject.getMaxRedemptionCount()) {
             voucherObject.setVoucherStatus(VoucherStatus.REDEEMED);
         }
-        voucherRepository.save(voucher.get());
+        return voucherRepository.save(voucher.get());
     }
 }

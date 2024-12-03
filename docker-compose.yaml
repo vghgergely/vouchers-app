@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  vouchers-db:
     image: postgres:latest
     container_name: postgres
     environment:
@@ -13,29 +13,28 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  wecan-vouchers-backend:
+  vouchers-backend:
     container_name: wecan-vouchers-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vouchers
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://vouchers-db:5432/vouchers
     depends_on:
-      - postgres
+      - vouchers-db
     ports:
       - "8080:8080"
 
-  # wecan-vouchers-frontend:
-  #   image: node:18-alpine
-  #   container_name: wecan-vouchers-frontend
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   command: ["npm", "start"]
+  vouchers-frontend:
+    image: node:18-alpine
+    container_name: wecan-vouchers-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    command: ["npm", "start"]
 
 volumes:
   postgres_data:

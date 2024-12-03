@@ -30,7 +30,6 @@ public class Voucher {
     private VoucherStatus voucherStatus;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable=true)
     private Date expiryDate;
 
     
@@ -93,5 +92,5 @@ public class Voucher {
     }
 
     public boolean isRedeemable() {
-        return this.voucherStatus == VoucherStatus.ACTIVE && !isExpired();
+        return this.voucherStatus == VoucherStatus.ACTIVE;
     }}

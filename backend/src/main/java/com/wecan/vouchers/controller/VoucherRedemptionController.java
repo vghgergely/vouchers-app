@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wecan.vouchers.exceptions.VoucherException;
+import com.wecan.vouchers.entity.Voucher;
 import com.wecan.vouchers.service.VoucherService;
 
 @RestController
@@ -18,15 +18,9 @@ public class VoucherRedemptionController {
     private VoucherService voucherService;
 
     @PostMapping("/{code}/redeem")
-    public ResponseEntity<String> redeemVoucher(@PathVariable String code) {
-        try {
-            voucherService.redeemVoucher(code);
-            return ResponseEntity.ok().body("hello");
-        } catch (VoucherException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Voucher> redeemVoucher(@PathVariable String code) {
+        Voucher redeemedVoucher = voucherService.redeemVoucher(code);
+        return ResponseEntity.ok().body(redeemedVoucher);
     }
-
-    // Other methods...
 }
 

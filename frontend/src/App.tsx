@@ -10,7 +10,7 @@ function App() {
 }
 
 function callEndpoint() {
-  axios.post("http://localhost:8080/api/vouchers/redemption/1/redeem")
+  axios.get("http://localhost:8080/api/users")
   .then((response) => {
     console.log(response);
   })

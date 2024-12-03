@@ -1,7 +1,13 @@
 package com.wecan.vouchers.exceptions;
 
-public class VoucherException extends Exception {
-    public VoucherException(String message) {
-        super(message);
+public class VoucherException extends RuntimeException {
+    private final String voucherCode;
+    public VoucherException(String code) {
+        super(code);
+        this.voucherCode = code;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
     }
 }

@@ -10,4 +10,5 @@ import com.wecan.vouchers.entity.Voucher;
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     Optional<Voucher> findByCode(String code);
+    Boolean existsByCode(String code);
 }
