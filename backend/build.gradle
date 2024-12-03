@@ -1,0 +1,53 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.0'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id "org.flywaydb.flyway" version "11.0.0"
+}
+
+group = 'com.wecan'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(23)
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven {
+        url "https://download.red-gate.com/maven/release"
+    }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.flywaydb:flyway-database-postgresql:11.0.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+flyway {
+    url = 'jdbc:postgresql://postgres:5432/vouchers'
+    user = 'postgres'
+	password = 'postgres'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+springBoot {
+	mainClass = 'com.wecan.VouchersApplication'
+}
