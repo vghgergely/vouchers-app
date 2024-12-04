@@ -5,6 +5,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import store from './store';
 import { BrowserRouter } from 'react-router-dom';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +14,9 @@ root.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-        <App />
+        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+          <App />
+        </ErrorBoundary>
       </BrowserRouter>
     </React.StrictMode>
   </Provider>

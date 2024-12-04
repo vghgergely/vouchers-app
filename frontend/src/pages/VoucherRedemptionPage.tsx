@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { getAllVouchers, redeemVouchers } from '../api/vouchersApi';
+import { redeemVouchers } from '../api/vouchersApi';
 
 import { Voucher, BulkVoucherRedemptionRequest, VoucherRedemptionRequest } from '../types';
 import ExpiredVoucherGroup from '../components/ExpiredVoucherGroup';

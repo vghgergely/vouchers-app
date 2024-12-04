@@ -1,33 +1,39 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../api/usersApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/userSlice";
+import { RootState } from "../store";
 
-function UserPicker({className} : {className: string}) {
+interface UserPickerProps {
+  className: string;
+  onError: (error: string) => void;
+}
+
+function UserPicker({className, onError} : UserPickerProps) {
   const [users, setUsers] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const selectedUser = useSelector((state: RootState) => state.user.selectedUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getUsers().then((response) => {
       setUsers(response.data);
       if (response.data.length > 0) {
-        setSelectedUser(response.data[0]);
         dispatch(setUser(response.data[0]));
       }
+    }).catch(() => {
+      onError('Error loading users, please try again later.');
     });
   }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = e.target.value;
-    setSelectedUser(users.find((user) => user.id == selectedId) || null);
-    dispatch(setUser(users.find((user) => user.id == selectedId) || null));
+    dispatch(setUser(users.find((user) => user.id === Number(selectedId)) || null));
   }
 
   return (
-    <div className={`${className} pt-3 dark`}>
+    <div className={`${className} pt-3`}>
       <select 
-        className="transition duration-300 bg-blue-200 border text-center border-gray-300 text-gray-900 text-sm rounded-2xl focus:ring-red-300 focus:border-red-300 block w-auto p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        className="border text-center text-sm rounded-2xl block w-auto px-4 py-2.5 bg-blue-500 border-gray-600 text-white hover:bg-blue-600 hover:border-gray-900"
         value={selectedUser?.id}
         onChange={handleChange}
       >

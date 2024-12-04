@@ -1,4 +1,3 @@
-import { type } from "os";
 import { Voucher } from "../types";
 import VoucherCard from "./VoucherCard";
 

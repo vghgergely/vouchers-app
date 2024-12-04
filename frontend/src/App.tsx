@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import UserPicker from './components/UserPicker';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -8,19 +8,23 @@ import VoucherRedemptionPage from './pages/VoucherRedemptionPage';
 import { getAllVouchers } from './api/vouchersApi';
 import { setVouchers } from './store/voucherSelectionSlice';
 import VoucherManagementPage from './pages/VoucherManagementPage';
+import ErrorDisplay from './components/ErrorDisplay';
 
 function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const selectedUser = useSelector((state: RootState) => state.user.selectedUser);
-  const selectedVouchers = useSelector((state: RootState) => state.voucherSelection.selectedVouchers);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getAllVouchers().then((response) => {
         dispatch(setVouchers(response.data));
+        setError(null);
+    }).catch(() => {
+        setError('Error loading vouchers, please try again later.');
     })
-}, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (selectedUser?.role === 'CLIENT') {
@@ -41,16 +45,21 @@ function App() {
 
   return (
     <div className="App dark p-10">
-      <UserPicker className="fixed top-10 right-10"/>
-      {selectedUser && (
+      {error && <ErrorDisplay message={error}/>}
+      {!error && (
         <>
-          <h1 className="text-center text-3xl font-bold mb-4">{getTitle()}</h1>
-          <Routes>
-            <Route path="/vouchers" element={<VoucherRedemptionPage />} />
-            <Route path="/management" element={<VoucherManagementPage />} />
-          </Routes>
+        <UserPicker className="fixed top-10 right-10" onError={setError}/>
+        {selectedUser && (
+          <>
+            <h1 className="text-center text-3xl font-bold mb-4">{getTitle()}</h1>
+            <Routes>
+              <Route path="/vouchers" element={<VoucherRedemptionPage />} />
+              <Route path="/management" element={<VoucherManagementPage />} />
+            </Routes>
+          </>
+        )}
         </>
-      )}
+    )}
     </div>
   );
 }

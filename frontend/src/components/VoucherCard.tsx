@@ -28,7 +28,7 @@ function VoucherCard({ voucher, className, selected}: VoucherCardProps) {
   return (
     <div className={`${className} - w-64 min-h-52 p-4 m-2 bg-white rounded-lg shadow-md ${selected ? 'border-2 border-blue-500 bg-blue-50' : ''}`} onClick={handleCardClick}>
         <div className="font-bold text-lg truncate">{voucher.code}</div>
-        {voucher.redemptionsLeft != 0 && <div>{voucher.expired ? 'Expired' : 'Expires'} at: {voucher.expiryDate.split("T")[0]}</div>}
+        {voucher.redemptionsLeft !== 0 && <div>{voucher.expired ? 'Expired' : 'Expires'} at: {voucher.expiryDate.split("T")[0]}</div>}
         {voucher.redeemable && (
           <div>
             Redemptions left: {voucher.redemptionsLeft}
