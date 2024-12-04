@@ -7,7 +7,8 @@ import { Voucher, BulkVoucherRedemptionRequest, VoucherRedemptionRequest } from 
 import ExpiredVoucherGroup from '../components/ExpiredVoucherGroup';
 import RedeemableVoucherGroup from '../components/RedeemableVoucherGroup';
 import RedeemedVoucherGroup from '../components/RedeemedVoucherGroup';
-import { toggleSelectVoucher, setVouchers } from '../states/voucherSelectionSlice';
+import { toggleSelectVoucher } from '../states/voucherSelectionSlice';
+import { setVouchers } from '../states/voucherSlice';
 
 function VoucherRedemptionPage() {
     const dispatch = useDispatch();
@@ -15,7 +16,7 @@ function VoucherRedemptionPage() {
     const selectedVouchers = useSelector((state: RootState) => state.voucherSelection.selectedVouchers);
     const [showExpired, setShowExpired] = useState<boolean>(false);
     const [showRedeemed, setShowRedeemed] = useState<boolean>(false);
-    const vouchers = useSelector((state: RootState) => state.voucherSelection.vouchers);
+    const vouchers = useSelector((state: RootState) => state.vouchers.vouchers);
 
     const redeemableVouchers = vouchers.filter((voucher: Voucher) => voucher.redeemable && !voucher.expired);
     const expiredVouchers = vouchers.filter((voucher: Voucher) => voucher.expired);

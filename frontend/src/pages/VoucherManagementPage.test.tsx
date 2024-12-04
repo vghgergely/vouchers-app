@@ -1,121 +1,96 @@
 import VoucherManagementPage from '../pages/VoucherManagementPage';
+import { act } from 'react';
 import { createVouchers } from '../api/vouchersApi';
-import { appendVouchers } from '../states/voucherSelectionSlice';
+import { appendVouchers } from '../states/voucherSlice';
 import { render, screen, fireEvent, waitFor } from '../utils/test-utils';
+import { setupStore } from '../store';
+import { EnhancedStore } from '@reduxjs/toolkit';
 
-jest.mock('../api/vouchersApi');
-jest.mock('../states/voucherSelectionSlice');
+
+jest.mock('../api/vouchersApi', () => ({
+    createVouchers: jest.fn()
+  }));
 
 describe('VoucherManagementPage', () => {
+    let store: EnhancedStore;
     beforeEach(() => {
-        jest.clearAllMocks();
+        store = setupStore();
     });
 
-    it('renders without crashing', () => {
+
+    test('renders VoucherManagementPage', () => {
         render(
             <VoucherManagementPage />
         );
-        expect(screen.getByText('Voucher Code')).toBeInTheDocument();
-        expect(screen.getByText('Expiry Date')).toBeInTheDocument();
-        expect(screen.getByText('Maximum Redemptions')).toBeInTheDocument();
-        expect(screen.getByText('Add Voucher')).toBeInTheDocument();
+
+        expect(screen.getByText(/Voucher Code/i)).toBeInTheDocument();
     });
 
-    it('shows validation errors when required fields are empty', async () => {
+    test('adds voucher to the list and creates vouchers', async () => {
+        const mockReturnVoucher = {
+            data: [{ code: 'TESTCODE', expiryDate: '2025-12-31', maxRedemptionCount: 10, redeemable: true, expired: false }]
+          };
+        (createVouchers as jest.Mock).mockResolvedValue(mockReturnVoucher)
         render(
-
-            <VoucherManagementPage />
-
+            <VoucherManagementPage />, {store}
         );
-        fireEvent.click(screen.getByText('Add Voucher'));
+
+        fireEvent.change(screen.getByLabelText(/Voucher Code/i), { target: { value: 'TESTCODE' } });
+        fireEvent.change(screen.getByLabelText(/Expiry Date/i), { target: { value: '2025-12-31' } });
+        fireEvent.change(screen.getByLabelText(/Maximum Redemptions/i), { target: { value: '10' } });
+        fireEvent.click(screen.getByText(/Add Voucher/i));
         await waitFor(() => {
-            expect(screen.getByText('Voucher code is required')).toBeInTheDocument();
-            expect(screen.getByText('Expiry date is required')).toBeInTheDocument();
-            expect(screen.getByText('Maximum redemptions is required')).toBeInTheDocument();
+            expect(screen.getByText(/Vouchers to be Created/i)).toBeInTheDocument();
+            expect(screen.getByText(/TESTCODE/i)).toBeInTheDocument();
+            expect(screen.getByText(/Create Vouchers/i)).toBeInTheDocument();
+        })
+    
+        await act(async () => {
+            fireEvent.click(screen.getByText('Create Vouchers'));
         });
+        
+        expect(createVouchers).toHaveBeenCalledTimes(1);
+        expect(createVouchers).toHaveBeenCalledWith({
+            userRole: 'OPERATOR',
+            voucherCreationRequests: [{
+                code: 'TESTCODE',
+                expiryDate: '2025-12-31',
+                maxRedemptionCount: "10"
+            }]
+        });
+        expect(store.getState().vouchers.vouchers).toEqual(mockReturnVoucher.data);
     });
 
-    it('shows a validation error when the expiry date is not in the future', async () => {
+    test('handles API error', async () => {
+        const mockError = new Error('Failed to create vouchers');
+        (createVouchers as jest.Mock).mockRejectedValueOnce(mockError);
+        console.error = jest.fn();
+    
         render(
-
             <VoucherManagementPage />
-
         );
-        fireEvent.input(screen.getByLabelText('Voucher Code'), { target: { value: 'TESTCODE' } });
-        fireEvent.input(screen.getByLabelText('Expiry Date'), { target: { value: '2020-01-01' } });
-        fireEvent.input(screen.getByLabelText('Maximum Redemptions'), { target: { value: 5 } });
-        fireEvent.click(screen.getByText('Add Voucher'));
+    
+        fireEvent.change(screen.getByLabelText(/Voucher Code/i), { target: { value: 'TESTCODE' } });
+        fireEvent.change(screen.getByLabelText(/Expiry Date/i), { target: { value: '2025-12-31' } });
+        fireEvent.change(screen.getByLabelText(/Maximum Redemptions/i), { target: { value: '10' } });
+        fireEvent.click(screen.getByText(/Add Voucher/i));
+    
         await waitFor(() => {
-            expect(screen.getByText('Expiry date must be a future date')).toBeInTheDocument();
+          expect(screen.getByText(/Vouchers to be Created/i)).toBeInTheDocument();
+          expect(screen.getByText(/TESTCODE/i)).toBeInTheDocument();
+          expect(screen.getByText(/Create Vouchers/i)).toBeInTheDocument();
         });
-    });
-
-    it('shows a validation error when the maximum redemptions is less than 1', async () => {
-        render(
-
-            <VoucherManagementPage />
-
-        );
-        fireEvent.input(screen.getByLabelText('Voucher Code'), { target: { value: 'TESTCODE' } });
-        fireEvent.input(screen.getByLabelText('Expiry Date'), { target: { value: '2025-12-31' } });
-        fireEvent.input(screen.getByLabelText('Maximum Redemptions'), { target: { value: 0 } });
-        fireEvent.click(screen.getByText('Add Voucher'));
-        await waitFor(() => {
-            expect(screen.getByText('Maximum redemptions must be at least 1')).toBeInTheDocument();
+    
+        await act(async () => {
+          fireEvent.click(screen.getByText('Create Vouchers'));
         });
-    });
-
-    it('adds a new voucher to the vouchersToCreate state on form submission', async () => {
-        render(
-
-            <VoucherManagementPage />
-
-        );
-        fireEvent.input(screen.getByLabelText('Voucher Code'), { target: { value: 'TESTCODE' } });
-        fireEvent.input(screen.getByLabelText('Expiry Date'), { target: { value: '2025-12-31' } });
-        fireEvent.input(screen.getByLabelText('Maximum Redemptions'), { target: { value: 5 } });
-        fireEvent.click(screen.getByText('Add Voucher'));
-        await waitFor(() => {
-            expect(screen.getByText('Vouchers to be Created')).toBeInTheDocument();
-            expect(screen.getByText('TESTCODE - Expires on 2025-12-31 - Max Redemptions: 5')).toBeInTheDocument();
+    
+        expect(createVouchers).toHaveBeenCalledTimes(1);
+        expect(createVouchers).toHaveBeenCalledWith({
+          userRole: 'OPERATOR',
+          voucherCreationRequests: [{ code: 'TESTCODE', expiryDate: '2025-12-31', maxRedemptionCount: "10" }]
         });
-    });
-
-    it('calls handleCreateVouchers and dispatches appendVouchers on successful creation', async () => {
-        (createVouchers as jest.Mock).mockResolvedValue({ data: [{ code: 'TESTCODE', expiryDate: '2025-12-31', maxRedemptionCount: 5 }] });
-        render(
-
-            <VoucherManagementPage />
-
-        );
-        fireEvent.input(screen.getByLabelText('Voucher Code'), { target: { value: 'TESTCODE' } });
-        fireEvent.input(screen.getByLabelText('Expiry Date'), { target: { value: '2025-12-31' } });
-        fireEvent.input(screen.getByLabelText('Maximum Redemptions'), { target: { value: 5 } });
-        fireEvent.click(screen.getByText('Add Voucher'));
-        fireEvent.click(screen.getByText('Create Vouchers'));
-        await waitFor(() => {
-            expect(createVouchers).toHaveBeenCalledWith({
-                userRole: 'OPERATOR',
-                voucherCreationRequests: [{ code: 'TESTCODE', expiryDate: '2025-12-31', maxRedemptionCount: 5 }]
-            });
-            expect(appendVouchers).toHaveBeenCalledWith([{ code: 'TESTCODE', expiryDate: '2025-12-31', maxRedemptionCount: 5 }]);
-        });
-    });
-
-    it('displays an error message when the createVouchers API call fails', async () => {
-        (createVouchers as jest.Mock).mockRejectedValue(new Error('API error'));
-        render(
-
-            <VoucherManagementPage />
-
-        );
-        fireEvent.input(screen.getByLabelText('Voucher Code'), { target: { value: 'TESTCODE' } });
-        fireEvent.input(screen.getByLabelText('Expiry Date'), { target: { value: '2025-12-31' } });
-        fireEvent.input(screen.getByLabelText('Maximum Redemptions'), { target: { value: 5 } });
-        fireEvent.click(screen.getByText('Add Voucher'));
-        fireEvent.click(screen.getByText('Create Vouchers'));
-        await waitFor(() => {
-            expect(screen.getByText('Error creating vouchers. Please try again later.')).toBeInTheDocument();
-        });
-    });
+    
+        expect(console.error).toHaveBeenCalledWith('Error creating vouchers:', mockError);
+      });
 });

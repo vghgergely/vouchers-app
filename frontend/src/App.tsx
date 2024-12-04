@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import UserPicker from './components/UserPicker';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store';
 import VoucherRedemptionPage from './pages/VoucherRedemptionPage';
 import { getAllVouchers } from './api/vouchersApi';
-import { setVouchers } from './states/voucherSelectionSlice';
+import { setVouchers } from './states/voucherSlice';
 import VoucherManagementPage from './pages/VoucherManagementPage';
 import ErrorDisplay from './components/ErrorDisplay';
 

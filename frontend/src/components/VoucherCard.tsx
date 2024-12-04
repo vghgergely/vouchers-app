@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setRedemptionCount, toggleSelectVoucher } from "../states/voucherSelectionSlice";
 
-interface Voucher {
+export interface Voucher {
     id: number;
     code: string;
     expiryDate: string;

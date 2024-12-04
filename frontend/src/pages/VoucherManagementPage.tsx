@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { BulkVoucherCreationRequest, VoucherCreationRequest } from '../types';
 import { createVouchers } from '../api/vouchersApi';
-import { appendVouchers } from '../states/voucherSelectionSlice';
+import { appendVouchers } from '../states/voucherSlice';
 import { RootState } from '../store';
 import VoucherForm, { VoucherCreationProps } from '../components/VoucherForm';
 import VoucherList from '../components/VoucherList';

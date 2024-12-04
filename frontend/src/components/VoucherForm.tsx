@@ -15,8 +15,9 @@ function VoucherForm({ onSubmit }: VoucherFormProps) {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-                <label className="block text-sm font-medium text-gray-700">Voucher Code</label>
+                <label htmlFor="code-input" className="block text-sm font-medium text-gray-700">Voucher Code</label>
                 <input
+                    id="code-input"
                     type="text"
                     {...register('code', { required: 'Voucher code is required' })}
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -24,8 +25,9 @@ function VoucherForm({ onSubmit }: VoucherFormProps) {
                 {errors.code && <span className="text-red-500 text-sm">{errors.code.message}</span>}
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
+                <label htmlFor="expiry-date-input" className="block text-sm font-medium text-gray-700">Expiry Date</label>
                 <input
+                    id="expiry-date-input"
                     type="date"
                     {...register('expiryDate', {
                         required: 'Expiry date is required',
@@ -36,8 +38,9 @@ function VoucherForm({ onSubmit }: VoucherFormProps) {
                 {errors.expiryDate && <span className="text-red-500 text-sm">{errors.expiryDate.message}</span>}
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">Maximum Redemptions</label>
+                <label htmlFor="max-redemption-count-input" className="block text-sm font-medium text-gray-700">Maximum Redemptions</label>
                 <input
+                    id="max-redemption-count-input"
                     type="number"
                     {...register('maxRedemptionCount', {
                         required: 'Maximum redemptions is required',

@@ -1,19 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Voucher } from '../types';
 
 interface VoucherSelectionState {
     selectedVouchers: { [voucherId: number]: number };
-    vouchers: Voucher[];
 }
 
 const initialState: VoucherSelectionState = {
     selectedVouchers: {},
-    vouchers: [],
 };
 
 const voucherSelectionSlice = createSlice({
     name: 'voucherSelection',
-    initialState,
+    initialState: initialState,
     reducers: {
         toggleSelectVoucher(state, action: PayloadAction<number>) {
             const voucherId = action.payload;
@@ -27,14 +24,9 @@ const voucherSelectionSlice = createSlice({
             const { voucherId, count } = action.payload;
             state.selectedVouchers[voucherId] = count;
         },
-        setVouchers(state, action: PayloadAction<Voucher[]>) {
-            state.vouchers = action.payload;
-        },
-        appendVouchers(state, action: PayloadAction<Voucher[]>) {
-            state.vouchers = [...state.vouchers, ...action.payload];
-        },
     },
+    
 });
 
-export const { toggleSelectVoucher, setRedemptionCount, setVouchers, appendVouchers} = voucherSelectionSlice.actions;
+export const { toggleSelectVoucher, setRedemptionCount } = voucherSelectionSlice.actions;
 export default voucherSelectionSlice.reducer;
