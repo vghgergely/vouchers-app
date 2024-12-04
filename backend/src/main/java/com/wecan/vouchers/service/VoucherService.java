@@ -1,5 +1,6 @@
 package com.wecan.vouchers.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,9 @@ public class VoucherService {
             voucherObject.setVoucherStatus(VoucherStatus.REDEEMED);
         }
         return voucherRepository.save(voucher.get());
+    }
+
+    public List<Voucher> getAllVouchers() {
+        return voucherRepository.findAll();
     }
 }

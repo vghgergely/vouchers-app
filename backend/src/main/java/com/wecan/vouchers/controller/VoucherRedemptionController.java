@@ -11,16 +11,19 @@ import com.wecan.vouchers.entity.Voucher;
 import com.wecan.vouchers.service.VoucherService;
 
 @RestController
-@RequestMapping("/api/vouchers/redemption")
+@RequestMapping("/api/vouchers")
 public class VoucherRedemptionController {
 
     @Autowired
     private VoucherService voucherService;
 
-    @PostMapping("/{code}/redeem")
-    public ResponseEntity<Voucher> redeemVoucher(@PathVariable String code) {
-        Voucher redeemedVoucher = voucherService.redeemVoucher(code);
-        return ResponseEntity.ok().body(redeemedVoucher);
+    @PostMapping("/redeem")
+    public ResponseEntity<Voucher[]> redeemVouchers(String[] codes) {
+        // Voucher redeemedVoucher = voucherService.redeemVoucher(code);
+        // return ResponseEntity.ok().body(redeemedVoucher);
+
+        
+        return ResponseEntity.ok().body(null);
     }
 }
 
