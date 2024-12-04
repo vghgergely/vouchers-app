@@ -29,7 +29,7 @@ public class VoucherManagementController {
 
     @PostMapping("/create/bulk")
     public ResponseEntity<List<Voucher>> createVouchers(@Valid @RequestBody BulkVoucherCreationRequest request) {
-        // Basic placeholder impleementation to avoid implementing a full authorization system
+        // Basic placeholder implementation to avoid implementing a full authorization system
         if (request.getUserRole() != ApiRequestUserRole.OPERATOR) {
             throw new UnauthorizedException("Client role is not authorized to create vouchers");
         }
@@ -40,7 +40,7 @@ public class VoucherManagementController {
 
     @PostMapping("/create")
     public ResponseEntity<Voucher> createVoucher(@Valid @RequestBody SingleVoucherCreationRequest request) {
-        // Basic placeholder impleementation to avoid implementing a full authorization system
+        // Basic placeholder implementation to avoid implementing a full authorization system
         if (request.getUserRole() != ApiRequestUserRole.OPERATOR) {
             throw new UnauthorizedException("Client role is not authorized to create voucher");
         }
