@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { getAllVouchers, redeemVouchers } from '../api/vouchersApi';
 
-import { Voucher, BatchVoucherRedemptionRequest, VoucherRedemptionRequest } from '../types';
+import { Voucher, BulkVoucherRedemptionRequest, VoucherRedemptionRequest } from '../types';
 import ExpiredVoucherGroup from '../components/ExpiredVoucherGroup';
 import RedeemableVoucherGroup from '../components/RedeemableVoucherGroup';
 import RedeemedVoucherGroup from '../components/RedeemedVoucherGroup';
@@ -30,7 +30,7 @@ function VoucherRedemptionPage() {
             } : null;
         }).filter(v => v !== null) as VoucherRedemptionRequest[];
 
-        const request: BatchVoucherRedemptionRequest = {
+        const request: BulkVoucherRedemptionRequest = {
             voucherRedemptionRequests,
             userRole: selectedUser?.role || 'CLIENT'
         };

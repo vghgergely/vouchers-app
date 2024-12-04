@@ -30,8 +30,11 @@ const voucherSelectionSlice = createSlice({
         setVouchers(state, action: PayloadAction<Voucher[]>) {
             state.vouchers = action.payload;
         },
+        appendVouchers(state, action: PayloadAction<Voucher[]>) {
+            state.vouchers = [...state.vouchers, ...action.payload];
+        },
     },
 });
 
-export const { toggleSelectVoucher, setRedemptionCount, setVouchers} = voucherSelectionSlice.actions;
+export const { toggleSelectVoucher, setRedemptionCount, setVouchers, appendVouchers} = voucherSelectionSlice.actions;
 export default voucherSelectionSlice.reducer;

@@ -7,6 +7,7 @@ import { RootState } from './store';
 import VoucherRedemptionPage from './pages/VoucherRedemptionPage';
 import { getAllVouchers } from './api/vouchersApi';
 import { setVouchers } from './store/voucherSelectionSlice';
+import VoucherManagementPage from './pages/VoucherManagementPage';
 
 function App() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ function App() {
           <h1 className="text-center text-3xl font-bold mb-4">{getTitle()}</h1>
           <Routes>
             <Route path="/vouchers" element={<VoucherRedemptionPage />} />
-            <Route path="/management" element={<div>Pepega</div>} />
+            <Route path="/management" element={<VoucherManagementPage />} />
           </Routes>
         </>
       )}
