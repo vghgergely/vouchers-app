@@ -2,19 +2,24 @@ import { useEffect } from 'react';
 import './App.css';
 import UserPicker from './components/UserPicker';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store';
 import VoucherRedemptionPage from './pages/VoucherRedemptionPage';
+import { getAllVouchers } from './api/vouchersApi';
+import { setVouchers } from './store/voucherSelectionSlice';
 
 function App() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const selectedUser = useSelector((state: RootState) => state.user.selectedUser);
   const selectedVouchers = useSelector((state: RootState) => state.voucherSelection.selectedVouchers);
 
   useEffect(() => {
-    console.log(selectedVouchers)
-  }, [selectedVouchers])
+    getAllVouchers().then((response) => {
+        dispatch(setVouchers(response.data));
+    })
+}, [])
 
   useEffect(() => {
     if (selectedUser?.role === 'CLIENT') {
