@@ -1,14 +1,20 @@
 package com.wecan.vouchers.exceptions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
@@ -63,6 +69,21 @@ public class ApiExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e) {
         return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        String detailedMessage = errors.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining(", "));
+
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Input validation failed: " + detailedMessage, ex);
+        apiError.setValidationErrors(errors);
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {

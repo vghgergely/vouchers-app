@@ -1,15 +1,7 @@
-// buildscript {
-//     dependencies {
-//         classpath("org.postgresql:postgresql:42.7.1")
-//         classpath("org.flywaydb:flyway-database-postgresql:9.22.3")
-//     }
-// }
-
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
-	// id "org.flywaydb.flyway" version "11.0.0"
 }
 
 group = 'com.wecan'
@@ -30,6 +22,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -41,13 +34,6 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-// flyway {
-// 	locations = ['filesystem:src/main/resources/db/migrations/*.sql']
-// 	url = 'jdbc:postgresql://localhost:5432/vouchers'
-//     user = 'postgres'
-// 	password = 'postgres'
-// }
 
 bootJar {
     enabled = true

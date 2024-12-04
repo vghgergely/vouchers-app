@@ -4,9 +4,20 @@ import java.util.Date;
 
 import com.wecan.vouchers.entity.Voucher;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class VoucherCreationRequest {
+    @NotBlank
     private String code;
+
+    @Min(1)
     private int maxRedemptionCount;
+
+    @Future
+    @NotNull
     private Date expiryDate;
 
     public String getCode() {

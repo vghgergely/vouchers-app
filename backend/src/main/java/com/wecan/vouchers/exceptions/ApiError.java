@@ -1,6 +1,7 @@
 package com.wecan.vouchers.exceptions;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
@@ -14,6 +15,8 @@ public class ApiError {
     private LocalDateTime timestamp;
     private String message;
     private String debugMessage;
+    private Map<String, String> validationErrors;
+
  
     private ApiError() {
         timestamp = LocalDateTime.now();
@@ -58,5 +61,9 @@ public class ApiError {
 
     public String getDebugMessage() {
         return debugMessage;
+    }
+
+    public void setValidationErrors(Map<String, String> validationErrors) {
+        this.validationErrors = validationErrors;
     }
 }

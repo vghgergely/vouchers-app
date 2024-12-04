@@ -1,11 +1,16 @@
 package com.wecan.vouchers.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wecan.vouchers.dto.VoucherCreationRequest;
+import com.wecan.vouchers.dto.VoucherRedemptionRequest;
 import com.wecan.vouchers.entity.Voucher;
 import com.wecan.vouchers.entity.Voucher.VoucherStatus;
 import com.wecan.vouchers.exceptions.VoucherAlreadyExistsException;
@@ -15,39 +20,73 @@ import com.wecan.vouchers.exceptions.VoucherExpiredException;
 import com.wecan.vouchers.exceptions.VoucherNotFoundException;
 import com.wecan.vouchers.repository.VoucherRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class VoucherService {
     @Autowired
     private VoucherRepository voucherRepository;
 
-    public Voucher createVoucher(Voucher voucher) {
-        if (voucherRepository.existsByCode(voucher.getCode())) {
-            throw new VoucherAlreadyExistsException(voucher.getCode());
+    @Transactional
+    public List<Voucher> createVouchers(List<VoucherCreationRequest> requests) {
+        Set<String> voucherCodes = requests.stream()
+                .map(VoucherCreationRequest::getCode)
+                .collect(Collectors.toSet());
+
+        List<Voucher> existingVouchers = voucherRepository.findByCodeIn(voucherCodes);
+        if (!existingVouchers.isEmpty()) {
+            String existingCodes = existingVouchers.stream()
+                    .map(Voucher::getCode)
+                    .collect(Collectors.joining(", "));
+            throw new VoucherAlreadyExistsException("Vouchers with the following codes already exist: " + existingCodes);
         }
+
+        List<Voucher> vouchers = requests.stream().map(VoucherCreationRequest::toEntity).collect(Collectors.toList());
+        return voucherRepository.saveAll(vouchers);
+    }
+
+    public Voucher createVoucher(VoucherCreationRequest voucherCreationRequest) {
+        if (voucherRepository.existsByCode(voucherCreationRequest.getCode())) {
+            throw new VoucherAlreadyExistsException(voucherCreationRequest.getCode());
+        }
+        
+        Voucher voucher = voucherCreationRequest.toEntity();
         return voucherRepository.save(voucher);
     }
+
 
     public Optional<Voucher> getVoucher(String code) {
         return voucherRepository.findByCode(code);
     }
 
-    public Voucher redeemVoucher(String code) throws VoucherException {
-        Optional<Voucher> voucher = getVoucher(code);
-        if (voucher.isEmpty()) {
-            throw new VoucherNotFoundException(code);
+    @Transactional
+    public List<Voucher> redeemVouchers(List<VoucherRedemptionRequest> voucherRedemptionRequests) throws VoucherException {
+        List<Voucher> redeemedVouchers = new ArrayList<>();
+        for (VoucherRedemptionRequest request : voucherRedemptionRequests) {
+            Voucher redeemedVoucher = redeemVoucher(request.getVoucherCode(), request.getAmount());
+            redeemedVouchers.add(redeemedVoucher);
         }
-        Voucher voucherObject = voucher.get();
-        if (voucherObject.isExpired()) {
-            throw new VoucherExpiredException(code);
+        return redeemedVouchers;
+    }
+
+    public Voucher redeemVoucher(String voucherCode, int amount) {
+        Optional<Voucher> voucherOpt = voucherRepository.findByCode(voucherCode);
+        if (voucherOpt.isEmpty()) {
+            throw new VoucherNotFoundException(voucherCode);
         }
-        if (!voucherObject.isRedeemable()) {
-            throw new VoucherAlreadyRedeemedException(code);
+        Voucher voucher = voucherOpt.get();
+        if (voucher.isExpired()) {
+            throw new VoucherExpiredException(voucherCode);
         }
-        voucherObject.setRedemptionCount(voucherObject.getRedemptionCount() + 1);
-        if (voucherObject.getRedemptionCount() == voucherObject.getMaxRedemptionCount()) {
-            voucherObject.setVoucherStatus(VoucherStatus.REDEEMED);
+        if (!voucher.isRedeemable()) {
+            throw new VoucherAlreadyRedeemedException(voucherCode);
         }
-        return voucherRepository.save(voucher.get());
+        voucher.setRedemptionCount(voucher.getRedemptionCount() + amount);
+        if (voucher.getRedemptionCount() >= voucher.getMaxRedemptionCount()) {
+            voucher.setVoucherStatus(VoucherStatus.REDEEMED);
+        }
+        Voucher redeemedVoucher = voucherRepository.save(voucher); 
+        return redeemedVoucher;
     }
 
     public List<Voucher> getAllVouchers() {

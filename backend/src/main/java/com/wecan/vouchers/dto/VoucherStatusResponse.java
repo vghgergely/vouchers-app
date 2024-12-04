@@ -4,7 +4,7 @@ import com.wecan.vouchers.entity.Voucher.VoucherStatus;
 
 public class VoucherStatusResponse {
     private String code;
-    private com.wecan.vouchers.entity.Voucher.VoucherStatus redemptionStatus;
+    private VoucherStatus redemptionStatus;
     private String expiryStatus;
     private int remainingRedemptions;
 
