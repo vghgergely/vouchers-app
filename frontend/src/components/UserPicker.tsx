@@ -3,7 +3,7 @@ import { getUsers } from "../api/usersApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/userSlice";
 
-function UserPicker() {
+function UserPicker({className} : {className: string}) {
   const [users, setUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ function UserPicker() {
   }
 
   return (
-    <div className="pt-3 dark">
+    <div className={`${className} pt-3 dark`}>
       <select 
         className="transition duration-300 bg-blue-200 border text-center border-gray-300 text-gray-900 text-sm rounded-2xl focus:ring-red-300 focus:border-red-300 block w-auto p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         value={selectedUser?.id}

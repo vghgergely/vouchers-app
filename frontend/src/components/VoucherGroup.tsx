@@ -23,7 +23,7 @@ function VoucherGroup ({ vouchers, type, selectedVouchers }: VoucherGroupProps) 
   };
 
   return (
-    <div className="p-3 dark flex flex-row flex-wrap bg-gray-300 rounded-md">
+    <div className="p-3 dark flex flex-row flex-wrap bg-gray-300 rounded-md justify-center">
       {vouchers.map((voucher) => {
         const voucherWithRedemptionsLeft = {
           ...voucher,
