@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../api/usersApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../store/userSlice";
+import { setUser } from "../states/userSlice";
 import { RootState } from "../store";
 
 interface UserPickerProps {
@@ -23,7 +23,7 @@ function UserPicker({className, onError} : UserPickerProps) {
     }).catch(() => {
       onError('Error loading users, please try again later.');
     });
-  }, [dispatch]);
+  }, [dispatch, onError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = e.target.value;

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store';
 import VoucherRedemptionPage from './pages/VoucherRedemptionPage';
 import { getAllVouchers } from './api/vouchersApi';
-import { setVouchers } from './store/voucherSelectionSlice';
+import { setVouchers } from './states/voucherSelectionSlice';
 import VoucherManagementPage from './pages/VoucherManagementPage';
 import ErrorDisplay from './components/ErrorDisplay';
 

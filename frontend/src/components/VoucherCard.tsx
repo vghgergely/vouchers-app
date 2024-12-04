@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { setRedemptionCount, toggleSelectVoucher } from "../store/voucherSelectionSlice";
+import { setRedemptionCount, toggleSelectVoucher } from "../states/voucherSelectionSlice";
 
 interface Voucher {
     id: number;

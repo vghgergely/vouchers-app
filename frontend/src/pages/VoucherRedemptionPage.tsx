@@ -7,7 +7,7 @@ import { Voucher, BulkVoucherRedemptionRequest, VoucherRedemptionRequest } from 
 import ExpiredVoucherGroup from '../components/ExpiredVoucherGroup';
 import RedeemableVoucherGroup from '../components/RedeemableVoucherGroup';
 import RedeemedVoucherGroup from '../components/RedeemedVoucherGroup';
-import { toggleSelectVoucher, setVouchers } from '../store/voucherSelectionSlice';
+import { toggleSelectVoucher, setVouchers } from '../states/voucherSelectionSlice';
 
 function VoucherRedemptionPage() {
     const dispatch = useDispatch();
