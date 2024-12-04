@@ -6,11 +6,10 @@ import VoucherCard from "./VoucherCard";
 interface VoucherGroupProps {
     vouchers: Voucher[];
     type: 'redeemable' | 'expired' | 'redeemed';
-    selectedVouchers?: Set<number>;
-    onSelectVoucher?: (id: number) => void;
+    selectedVouchers?: { [voucherId: number]: number };
   }
 
-function VoucherGroup ({ vouchers, type, onSelectVoucher, selectedVouchers }: VoucherGroupProps) {
+function VoucherGroup ({ vouchers, type, selectedVouchers }: VoucherGroupProps) {
   const getClassName = () => {
     switch (type) {
       case 'redeemable':
@@ -24,16 +23,21 @@ function VoucherGroup ({ vouchers, type, onSelectVoucher, selectedVouchers }: Vo
   };
 
   return (
-    <div className="pt-3 dark flex flex-row flex-wrap">
-      {vouchers.map((voucher) => (
+    <div className="p-3 dark flex flex-row flex-wrap bg-gray-300 rounded-md">
+      {vouchers.map((voucher) => {
+        const voucherWithRedemptionsLeft = {
+          ...voucher,
+          redemptionsLeft: voucher.maxRedemptionCount - voucher.redemptionCount,
+        };
+        return (
         <VoucherCard
           key={voucher.id}
           className={`py-10 bg-slate-300 flex-grow-0 ${getClassName()}`}
-          voucher={voucher}
-          onClick={() => onSelectVoucher && onSelectVoucher(voucher.id)}
-          selected={selectedVouchers?.has(voucher.id)}
+          voucher={voucherWithRedemptionsLeft}
+          selected={!!selectedVouchers?.[voucher.id]}
         />
-      ))}
+      );
+      })}
     </div>
   );
 };

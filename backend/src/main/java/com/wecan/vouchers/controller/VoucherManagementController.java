@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wecan.vouchers.dto.ApiRequestUserRole;
 import com.wecan.vouchers.dto.VoucherBatchCreationRequest;
 import com.wecan.vouchers.entity.Voucher;
+import com.wecan.vouchers.exceptions.UnauthorizedException;
 import com.wecan.vouchers.service.VoucherService;
 
 @RestController
@@ -26,6 +28,13 @@ public class VoucherManagementController {
 
     @PostMapping("/create")
     public ResponseEntity<List<Voucher>> createVouchers(@RequestBody VoucherBatchCreationRequest request) {
+        // Basic placeholder implmentation to avoid implementing a full authorization system
+        if (request.getUserRole() == null) {
+            throw new IllegalArgumentException("User role is required");
+        }
+        if (request.getUserRole() != ApiRequestUserRole.OPERATOR) {
+            throw new UnauthorizedException("Client role is not authorized to create vouchers");
+        }
         List<Voucher> createdVouchers = Arrays.stream(request.getVoucherCreationRequests())
             .map(voucherCreationRequest -> {
                 if (voucherCreationRequest == null) {

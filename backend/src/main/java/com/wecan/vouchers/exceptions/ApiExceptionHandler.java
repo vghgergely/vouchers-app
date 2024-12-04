@@ -60,6 +60,10 @@ public class ApiExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, message));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e) {
+        return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, e.getMessage()));
+    }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());
