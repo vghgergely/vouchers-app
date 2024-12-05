@@ -1,6 +1,6 @@
 package com.wecan.vouchers.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.wecan.vouchers.entity.Voucher;
 
@@ -18,7 +18,7 @@ public class VoucherCreationRequest {
 
     @Future
     @NotNull
-    private Date expiryDate;
+    private LocalDate expiryDate;
 
     public String getCode() {
         return code;
@@ -28,11 +28,11 @@ public class VoucherCreationRequest {
         this.code = code;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -55,5 +55,11 @@ public class VoucherCreationRequest {
 
         return voucher;
 
+    }
+
+    public VoucherCreationRequest(String code, String expiryDate, int maxRedemptionCount) {
+        this.code = code;
+        this.expiryDate = LocalDate.parse(expiryDate);
+        this.maxRedemptionCount = maxRedemptionCount;
     }
 }

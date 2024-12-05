@@ -20,4 +20,12 @@ public class BulkVoucherCreationRequest {
     public ApiRequestUserRole getUserRole() {
         return userRole;
     }
+
+    public void setVoucherCreationRequests(List<VoucherCreationRequest> voucherCreationRequests) {
+        this.voucherCreationRequests = voucherCreationRequests;
+    }
+
+    public void setUserRole(ApiRequestUserRole userRole) {
+        this.userRole = userRole;
+    }
 }

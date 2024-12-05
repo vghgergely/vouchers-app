@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wecan.vouchers.dto.ApiRequestUserRole;
 import com.wecan.vouchers.dto.BulkVoucherCreationRequest;
 import com.wecan.vouchers.dto.SingleVoucherCreationRequest;
+import com.wecan.vouchers.dto.VoucherCreationResponse;
 import com.wecan.vouchers.entity.Voucher;
 import com.wecan.vouchers.exceptions.UnauthorizedException;
+import com.wecan.vouchers.mapper.VoucherMapper;
 import com.wecan.vouchers.service.VoucherService;
 
 import jakarta.validation.Valid;
@@ -27,26 +29,31 @@ public class VoucherManagementController {
     @Autowired
     private VoucherService voucherService;
 
+    @Autowired
+    private VoucherMapper voucherMapper;
+
     @PostMapping("/create/bulk")
-    public ResponseEntity<List<Voucher>> createVouchers(@Valid @RequestBody BulkVoucherCreationRequest request) {
+    public ResponseEntity<List<VoucherCreationResponse>> createVouchers(@Valid @RequestBody BulkVoucherCreationRequest request) {
         // Basic placeholder implementation to avoid implementing a full authorization system
         if (request.getUserRole() != ApiRequestUserRole.OPERATOR) {
             throw new UnauthorizedException("Client role is not authorized to create vouchers");
         }
 
         List<Voucher> createdVouchers = voucherService.createVouchers(request.getVoucherCreationRequests()); 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdVouchers);
+        List<VoucherCreationResponse> response = voucherMapper.toDtoList(createdVouchers);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Voucher> createVoucher(@Valid @RequestBody SingleVoucherCreationRequest request) {
+    public ResponseEntity<VoucherCreationResponse> createVoucher(@Valid @RequestBody SingleVoucherCreationRequest request) {
         // Basic placeholder implementation to avoid implementing a full authorization system
         if (request.getUserRole() != ApiRequestUserRole.OPERATOR) {
             throw new UnauthorizedException("Client role is not authorized to create voucher");
         }
 
         Voucher createdVoucher = voucherService.createVoucher(request.getVoucherCreationRequest()); 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdVoucher);
+        VoucherCreationResponse response = voucherMapper.toDto(createdVoucher);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping()

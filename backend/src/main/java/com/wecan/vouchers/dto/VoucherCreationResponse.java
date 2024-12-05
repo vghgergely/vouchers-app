@@ -1,35 +1,19 @@
-package com.wecan.vouchers.entity;
+package com.wecan.vouchers.dto;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "vouchers")
-public class Voucher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class VoucherCreationResponse {
     private Long id;
 
-    @Column(unique = true)
     private String code;
     
     private int redemptionCount;
     private int maxRedemptionCount;
     
-    @Enumerated(EnumType.STRING)
     private VoucherStatus voucherStatus;
     
     private LocalDate expiryDate;
 
-    
     public enum VoucherStatus {
         ACTIVE,
         REDEEMED,
@@ -92,15 +76,15 @@ public class Voucher {
         return this.voucherStatus == VoucherStatus.ACTIVE;
     }
 
-    public Voucher(Long id, String code, String expiryDate, int maxRedemptionCount, int redemptionCount) {
+    public VoucherCreationResponse(Long id, String code, int redemptionCount, int maxRedemptionCount, VoucherStatus voucherStatus, LocalDate expiryDate) {
         this.id = id;
         this.code = code;
-        this.expiryDate = LocalDate.parse(expiryDate);
-        this.maxRedemptionCount = maxRedemptionCount;
         this.redemptionCount = redemptionCount;
-        this.voucherStatus = VoucherStatus.ACTIVE;
+        this.maxRedemptionCount = maxRedemptionCount;
+        this.voucherStatus = voucherStatus;
+        this.expiryDate = expiryDate;
     }
 
-    public Voucher() {
+    public VoucherCreationResponse() {
     }
 }

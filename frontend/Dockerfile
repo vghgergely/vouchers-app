@@ -10,6 +10,7 @@ COPY tsconfig.json /wecan-vouchers-frontend/
 COPY tailwind.config.js /wecan-vouchers-frontend/
 COPY scripts/ /wecan-vouchers-frontend/scripts
 COPY config/ /wecan-vouchers-frontend/config
+
 RUN npm install
 RUN npx tailwindcss -i ./src/index.css -o ./src/output.css
 

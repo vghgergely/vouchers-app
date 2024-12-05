@@ -18,4 +18,12 @@ public class SingleVoucherCreationRequest {
     public VoucherCreationRequest getVoucherCreationRequest() {
         return voucherCreationRequest;
     }
+
+    public void setUserRole(ApiRequestUserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    public void setVoucherCreationRequest(VoucherCreationRequest voucherCreationRequest) {
+        this.voucherCreationRequest = voucherCreationRequest;
+    }
 }

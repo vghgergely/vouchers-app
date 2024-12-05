@@ -11,9 +11,13 @@ export interface VoucherFormProps {
 }
 
 function VoucherForm({ onSubmit }: VoucherFormProps) {
-    const { register, handleSubmit, formState: { errors } } = useForm<VoucherCreationProps>();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<VoucherCreationProps>();
+    const handleFormSubmit: SubmitHandler<VoucherCreationProps> = (data) => {
+        onSubmit(data);
+        reset();
+    };
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div>
                 <label htmlFor="code-input" className="block text-sm font-medium text-gray-700">Voucher Code</label>
                 <input
