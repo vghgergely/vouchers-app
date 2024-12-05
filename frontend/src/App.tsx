@@ -47,7 +47,7 @@ function App() {
       {error && <ErrorDisplay message={error}/>}
       {!error && (
         <>
-        <UserPicker className="fixed top-10 right-10" onError={setError}/>
+        <UserPicker className="fixed top-2 right-2 md:top-5 md:right-5 lg:top-10 lg:right-10" onError={setError}/>
         {selectedUser && (
           <>
             <h1 className="text-center text-3xl font-bold mb-4">{getTitle()}</h1>
