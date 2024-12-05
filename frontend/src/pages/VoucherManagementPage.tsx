@@ -7,16 +7,17 @@ import { appendVouchers } from '../states/voucherSlice';
 import { RootState } from '../store';
 import VoucherForm, { VoucherCreationProps } from '../components/VoucherForm';
 import VoucherList from '../components/VoucherList';
+import useDelayedState from '../hooks/useDelayedState';
 
 
 
 function VoucherManagementPage() {
   const { reset } = useForm<VoucherCreationProps>();
   const [vouchersToCreate, setVouchersToCreate] = useState<VoucherCreationRequest[]>([]);
-  const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = useDelayedState(false);
+  const [showError, setShowError] = useDelayedState(false);
   const selectedUser = useSelector((state: RootState) => state.user.selectedUser);
-  
+
   const dispatch = useDispatch();
 
   const onSubmit: SubmitHandler<VoucherCreationProps> = (data) => {
@@ -29,31 +30,31 @@ function VoucherManagementPage() {
     reset();
   };
 
-  useEffect(() => {
-    let successTimeoutId: NodeJS.Timeout | undefined;
-    let errorTimeoutId: NodeJS.Timeout | undefined;
+  // useEffect(() => {
+  //   let successTimeoutId: NodeJS.Timeout | undefined;
+  //   let errorTimeoutId: NodeJS.Timeout | undefined;
 
-    if (showSuccess) {
-      successTimeoutId = setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000);
-    }
+  //   if (showSuccess) {
+  //     successTimeoutId = setTimeout(() => {
+  //       setShowSuccess(false);
+  //     }, 3000);
+  //   }
 
-    if (showError) {
-      successTimeoutId = setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    }
+  //   if (showError) {
+  //     successTimeoutId = setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   }
 
-    return () => {
-      if (successTimeoutId) {
-        clearTimeout(successTimeoutId);
-      }
-      if (errorTimeoutId) {
-        clearTimeout(errorTimeoutId);
-      }
-    };
-  }, [showSuccess, showError]);
+  //   return () => {
+  //     if (successTimeoutId) {
+  //       clearTimeout(successTimeoutId);
+  //     }
+  //     if (errorTimeoutId) {
+  //       clearTimeout(errorTimeoutId);
+  //     }
+  //   };
+  // }, [showSuccess, showError]);
 
   const handleCreateVouchers = () => {
     const userRole = selectedUser?.role || 'OPERATOR';
@@ -81,11 +82,11 @@ function VoucherManagementPage() {
   return (
     <div className="p-10">
       <VoucherForm onSubmit={onSubmit} />
-        <div className={`fixed top-24 -translate-x-1/2 left-1/2 mt-4 p-4 w-auto bg-green-100 border border-green-400 text-green-700 rounded transition-opacity duration-300 ${showSuccess ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`z-50 fixed top-24 -translate-x-1/2 left-1/2 mt-4 p-4 w-auto bg-green-100 border border-green-400 text-green-700 rounded transition-opacity duration-300 ${showSuccess ? 'opacity-100' : 'opacity-0'}`}>
         Voucher(s) created successfully
       </div>
-     
-      <div className={`fixed top-24 -translate-x-1/2 left-1/2 transition-opacity duration-300 mt-4 p-4 w-auto border bg-red-100 border-red-400 text-red-800 rounded ${showError ? 'opacity-100' : 'opacity-0'}`}>
+
+      <div className={`z-50 fixed top-24 -translate-x-1/2 left-1/2 transition-opacity duration-300 mt-4 p-4 w-auto border bg-red-100 border-red-400 text-red-800 rounded ${showError ? 'opacity-100' : 'opacity-0'}`}>
         Failed to create vouchers
       </div>
       {vouchersToCreate.length > 0 && (

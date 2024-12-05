@@ -9,6 +9,7 @@ import RedeemableVoucherGroup from '../components/RedeemableVoucherGroup';
 import RedeemedVoucherGroup from '../components/RedeemedVoucherGroup';
 import { toggleSelectVoucher } from '../states/voucherSelectionSlice';
 import { setVouchers } from '../states/voucherSlice';
+import useDelayedState from '../hooks/useDelayedState';
 
 function VoucherRedemptionPage() {
     const dispatch = useDispatch();
@@ -16,6 +17,8 @@ function VoucherRedemptionPage() {
     const selectedVouchers = useSelector((state: RootState) => state.voucherSelection.selectedVouchers);
     const [showExpired, setShowExpired] = useState<boolean>(false);
     const [showRedeemed, setShowRedeemed] = useState<boolean>(false);
+    const [showSuccess, setShowSuccess] = useDelayedState(false);
+    const [showError, setShowError] = useDelayedState(false);
     const vouchers = useSelector((state: RootState) => state.vouchers.vouchers);
 
     const redeemableVouchers = vouchers.filter((voucher: Voucher) => voucher.redeemable && !voucher.expired);
@@ -44,14 +47,24 @@ function VoucherRedemptionPage() {
                     return updatedVoucher ? updatedVoucher : voucher;
                 })));
                 Object.keys(selectedVouchers).forEach(id => dispatch(toggleSelectVoucher(parseInt(id))));
+                setShowSuccess(true);
+                setShowError(false);
             })
             .catch(error => {
-                console.error('Error redeeming vouchers:', error);
+                setShowSuccess(false);
+                setShowError(true);
             });
     };
 
     return (
         <>
+            <div className={`z-50 fixed top-24 -translate-x-1/2 left-1/2 mt-4 p-4 w-auto bg-green-100 border border-green-400 text-green-700 rounded transition-opacity duration-300 ${showSuccess ? 'opacity-100' : 'opacity-0'}`}>
+                Voucher(s) redeemed successfully
+            </div>
+
+            <div className={`z-50 fixed top-24 -translate-x-1/2 left-1/2 transition-opacity duration-300 mt-4 p-4 w-auto border bg-red-100 border-red-400 text-red-800 rounded ${showError ? 'opacity-100' : 'opacity-0'}`}>
+                Failed to redeem vouchers
+            </div>
             <div className="checkbox-group mt-4 flex space-x-4">
                 <label className='flex items-center space-x-2'>
                     <input
