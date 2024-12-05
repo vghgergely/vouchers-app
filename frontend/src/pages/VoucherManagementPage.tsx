@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { BulkVoucherCreationRequest, VoucherCreationRequest } from '../types';
@@ -29,32 +29,6 @@ function VoucherManagementPage() {
     setVouchersToCreate([...vouchersToCreate, newVoucher]);
     reset();
   };
-
-  // useEffect(() => {
-  //   let successTimeoutId: NodeJS.Timeout | undefined;
-  //   let errorTimeoutId: NodeJS.Timeout | undefined;
-
-  //   if (showSuccess) {
-  //     successTimeoutId = setTimeout(() => {
-  //       setShowSuccess(false);
-  //     }, 3000);
-  //   }
-
-  //   if (showError) {
-  //     successTimeoutId = setTimeout(() => {
-  //       setShowError(false);
-  //     }, 3000);
-  //   }
-
-  //   return () => {
-  //     if (successTimeoutId) {
-  //       clearTimeout(successTimeoutId);
-  //     }
-  //     if (errorTimeoutId) {
-  //       clearTimeout(errorTimeoutId);
-  //     }
-  //   };
-  // }, [showSuccess, showError]);
 
   const handleCreateVouchers = () => {
     const userRole = selectedUser?.role || 'OPERATOR';
