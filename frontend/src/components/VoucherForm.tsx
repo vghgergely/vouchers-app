@@ -16,6 +16,11 @@ function VoucherForm({ onSubmit }: VoucherFormProps) {
         onSubmit(data);
         reset();
     };
+
+    const defaultExpiryDate = new Date();
+    defaultExpiryDate.setFullYear(defaultExpiryDate.getFullYear() + 1);
+    const formattedExpiryDate = defaultExpiryDate.toISOString().substring(0, 10);
+
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div>
@@ -37,6 +42,7 @@ function VoucherForm({ onSubmit }: VoucherFormProps) {
                         required: 'Expiry date is required',
                         validate: value => new Date(value) > new Date() || 'Expiry date must be a future date'
                     })}
+                    defaultValue={formattedExpiryDate}
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.expiryDate && <span className="text-red-500 text-sm">{errors.expiryDate.message}</span>}
