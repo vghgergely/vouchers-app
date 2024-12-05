@@ -74,7 +74,6 @@ describe('App', () => {
 
     (getUsers as jest.Mock).mockResolvedValueOnce({ data: [{ id: 1, name: 'testClient', role: 'OPERATOR' }] });
 
-    // Update the store to simulate a different user role
     store = setupStore({
       user: { selectedUser: { role: 'OPERATOR', id: 1, name: 'testOperator' } },
       vouchers: { vouchers: [] }

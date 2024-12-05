@@ -20,7 +20,6 @@ describe('voucherSelectionSlice', () => {
         let state = voucherSelectionReducer(initialState, toggleSelectVoucher(voucherId));
         expect(state.selectedVouchers).toEqual({ [voucherId]: 1 });
 
-        // Remove voucher
         state = voucherSelectionReducer(state, toggleSelectVoucher(voucherId));
         expect(state.selectedVouchers).toEqual({});
     });

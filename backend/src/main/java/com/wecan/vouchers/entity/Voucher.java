@@ -101,6 +101,14 @@ public class Voucher {
         this.voucherStatus = VoucherStatus.ACTIVE;
     }
 
+    public Voucher(String code, String expiryDate, int maxRedemptionCount) {
+        this.code = code;
+        this.expiryDate = LocalDate.parse(expiryDate);
+        this.maxRedemptionCount = maxRedemptionCount;
+        this.redemptionCount = 0;
+        this.voucherStatus = VoucherStatus.ACTIVE;
+    }
+
     public Voucher() {
     }
 }
