@@ -17,8 +17,6 @@ const voucherSlice = createSlice({
             state.vouchers = action.payload;
         },
         appendVouchers(state, action: PayloadAction<Voucher[]>) {
-            console.log('Appending vouchers:', action.payload);
-            console.log('Current vouchers:', state.vouchers);
             state.vouchers = [...state.vouchers, ...action.payload];
         },
     },

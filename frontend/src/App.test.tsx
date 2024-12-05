@@ -1,10 +1,10 @@
 import { render, waitFor, screen} from './utils/test-utils';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { getAllVouchers } from './api/vouchersApi';
 import { RootState, setupStore } from './store';
 import { getUsers } from './api/usersApi';
+import { EnhancedStore } from '@reduxjs/toolkit';
 
 jest.mock('./api/vouchersApi', () => ({
   getAllVouchers: jest.fn(),
@@ -20,7 +20,7 @@ const initialState: Partial<RootState> = {
 };
 
 describe('App', () => {
-  let store;
+  let store: EnhancedStore;
 
   beforeEach(() => {
     store = setupStore(initialState);
@@ -38,7 +38,7 @@ describe('App', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Redeem Vouchers/i)).toBeInTheDocument();
+      expect(screen.getByText('Redeem Vouchers')).toBeInTheDocument();
     });
   });
 
@@ -53,7 +53,7 @@ describe('App', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Error loading vouchers, please try again later./i)).toBeInTheDocument();
+      expect(screen.getByText('Error loading vouchers, please try again later.')).toBeInTheDocument();
     });
   });
 
@@ -65,11 +65,11 @@ describe('App', () => {
     render(
         <BrowserRouter>
           <App />
-        </BrowserRouter>
+        </BrowserRouter>, { store}
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Redeem Vouchers/i)).toBeInTheDocument();
+      expect(screen.getByText('Redeem Vouchers')).toBeInTheDocument();
     });
 
     (getUsers as jest.Mock).mockResolvedValueOnce({ data: [{ id: 1, name: 'testClient', role: 'OPERATOR' }] });
@@ -83,11 +83,11 @@ describe('App', () => {
 
         <BrowserRouter>
           <App />
-        </BrowserRouter>
+        </BrowserRouter>, { store}
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Manage Vouchers/i)).toBeInTheDocument();
+      expect(screen.getByText('Manage Vouchers')).toBeInTheDocument();
     });
   });
 });

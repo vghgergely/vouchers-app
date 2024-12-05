@@ -1,7 +1,6 @@
 
 import RedeemableVoucherGroup from './RedeemableVoucherGroup';
 import { Voucher } from '../types';
-import VoucherGroup from './VoucherGroup';
 import { render, screen } from '../utils/test-utils';
 
 jest.mock('./VoucherGroup', () => (props: any) => (

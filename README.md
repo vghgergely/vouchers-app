@@ -4,7 +4,7 @@
 JDK23, Spring Boot, gradle, JUnit, H2, Flyway for migrations
 
 ## Frontend:
-React, Tailwind, Redux-toolkit, Jest
+React, Tailwind, Redux-toolkit, Jest, ESLint
 
 ## DB:
 Postgres

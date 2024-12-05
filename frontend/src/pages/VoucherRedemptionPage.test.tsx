@@ -15,18 +15,17 @@ const mockResponse = { data: [{ id: 1, code: 'VOUCHER1', expiryDate: '2025-12-31
 
 const initialState: Partial<RootState> = {
   user: { selectedUser: { id: 1, name: 'testClient', role: 'CLIENT' } },
-  vouchers: {vouchers: []},
+  vouchers: { vouchers: [] },
   voucherSelection: { selectedVouchers: {} }
 };
 
 describe('VoucherRedemptionPage', () => {
-    let store: EnhancedStore;
+  let store: EnhancedStore;
   beforeEach(() => {
     store = setupStore(initialState);
   });
 
   test('renders VoucherRedemptionPage and handles API success', async () => {
-    
     store.dispatch(setVouchers(mockResponse.data));
     store.dispatch(toggleSelectVoucher(1));
 
@@ -34,16 +33,13 @@ describe('VoucherRedemptionPage', () => {
     (redeemVouchers as jest.Mock).mockResolvedValueOnce(mockResponse);
 
     render(
-        <VoucherRedemptionPage />, {store}
+      <VoucherRedemptionPage />, { store }
     );
 
-    fireEvent.click(screen.getByLabelText(/Show Expired Vouchers/i));
-    fireEvent.click(screen.getByLabelText(/Show Redeemed Vouchers/i));
+    fireEvent.click(screen.getByLabelText('Show Expired Vouchers'));
+    fireEvent.click(screen.getByLabelText('Show Redeemed Vouchers'));
 
-    
-    await waitFor(() => {
-        fireEvent.click(screen.getByText(/Redeem Selected Vouchers/i));
-    });
+    fireEvent.click(screen.getByText('Redeem Selected Vouchers'));
 
     await waitFor(() => {
       expect(redeemVouchers).toHaveBeenCalledTimes(1);
@@ -58,14 +54,12 @@ describe('VoucherRedemptionPage', () => {
     store.dispatch(toggleSelectVoucher(1));
 
     render(
-        <VoucherRedemptionPage />, { store}
+      <VoucherRedemptionPage />, { store }
     );
 
-    fireEvent.click(screen.getByText(/Redeem Selected Vouchers/i));
+    fireEvent.click(screen.getByText('Redeem Selected Vouchers'));
 
-    await waitFor(() => {
-      expect(redeemVouchers).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith('Error redeeming vouchers:', mockError);
-    });
+    await waitFor(() => { expect(redeemVouchers).toHaveBeenCalledTimes(1); });
+    await waitFor(() => { expect(console.error).toHaveBeenCalledWith('Error redeeming vouchers:', mockError); });
   });
 });
