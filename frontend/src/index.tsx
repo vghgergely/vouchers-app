@@ -10,6 +10,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+console.log("Testing for PR")
 root.render(
   <Provider store={store}>
     <React.StrictMode>

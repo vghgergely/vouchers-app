@@ -36,7 +36,7 @@ public class ApiError {
     ApiError(HttpStatus status, Throwable ex) {
         this();
         this.status = status;
-        this.message = "An unexpected error occurred";
+        this.message = "Test error message for PR";
         this.debugMessage = ex.getLocalizedMessage();
     }
  
