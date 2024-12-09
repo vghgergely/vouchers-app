@@ -12,5 +12,8 @@ Postgres
 ## Infra:
 3 Dockerized layers, docker-compose up on root level starts up all 3 layers automatically
 
+## DevOps
+The repo has CI enabled on PR-s, there is an example PR to see it in action
+
 ### Next steps:
 More backend unit and integration tests. End-to-end tests
