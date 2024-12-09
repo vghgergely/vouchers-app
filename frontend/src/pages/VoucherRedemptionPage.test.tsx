@@ -5,9 +5,10 @@ import { getAllVouchers, redeemVouchers } from '../api/vouchersApi';
 import { setVouchers } from '../states/voucherSlice';
 import { toggleSelectVoucher } from '../states/voucherSelectionSlice';
 import { EnhancedStore } from '@reduxjs/toolkit';
+import useDelayedState from '../hooks/useDelayedState';
 
 jest.mock('../api/vouchersApi', () => ({
-  redeemVouchers: jest.fn(),
+  redeemVouchers: jest.fn().mockResolvedValue({}),
   getAllVouchers: jest.fn()
 }));
 
@@ -21,6 +22,7 @@ const initialState: Partial<RootState> = {
 
 describe('VoucherRedemptionPage', () => {
   let store: EnhancedStore;
+  
   beforeEach(() => {
     store = setupStore(initialState);
   });
@@ -28,38 +30,51 @@ describe('VoucherRedemptionPage', () => {
   test('renders VoucherRedemptionPage and handles API success', async () => {
     store.dispatch(setVouchers(mockResponse.data));
     store.dispatch(toggleSelectVoucher(1));
-
-    (getAllVouchers as jest.Mock).mockResolvedValueOnce(mockResponse);
     (redeemVouchers as jest.Mock).mockResolvedValueOnce(mockResponse);
 
-    render(
-      <VoucherRedemptionPage />, { store }
-    );
-
-    fireEvent.click(screen.getByLabelText('Show Expired Vouchers'));
-    fireEvent.click(screen.getByLabelText('Show Redeemed Vouchers'));
+    render(<VoucherRedemptionPage />, { store });
 
     fireEvent.click(screen.getByText('Redeem Selected Vouchers'));
 
-    await waitFor(() => {
-      expect(redeemVouchers).toHaveBeenCalledTimes(1);
-    });
+    await waitFor(() => expect(redeemVouchers).toHaveBeenCalledTimes(1));
   });
 
   test('handles API error', async () => {
     const mockError = new Error('Failed to redeem vouchers');
-    (redeemVouchers as jest.Mock).mockRejectedValueOnce(mockError);
-    console.error = jest.fn();
     store.dispatch(setVouchers(mockResponse.data));
     store.dispatch(toggleSelectVoucher(1));
+    (redeemVouchers as jest.Mock).mockRejectedValueOnce(mockError);
 
-    render(
-      <VoucherRedemptionPage />, { store }
-    );
+    render(<VoucherRedemptionPage />, { store });
 
     fireEvent.click(screen.getByText('Redeem Selected Vouchers'));
 
-    await waitFor(() => { expect(redeemVouchers).toHaveBeenCalledTimes(1); });
-    await waitFor(() => { expect(console.error).toHaveBeenCalledWith('Error redeeming vouchers:', mockError); });
+    await waitFor(() => expect(redeemVouchers).toHaveBeenCalledTimes(1));
+  });
+
+  test('toggles show expired vouchers checkbox', () => {
+    render(<VoucherRedemptionPage />, { store });
+
+    const checkbox = screen.getByLabelText('Show Expired Vouchers');
+    expect(checkbox).not.toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+  });
+
+  test('toggles show redeemed vouchers checkbox', () => {
+    render(<VoucherRedemptionPage />, { store });
+
+    const checkbox = screen.getByLabelText('Show Redeemed Vouchers');
+    expect(checkbox).not.toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
   });
 });

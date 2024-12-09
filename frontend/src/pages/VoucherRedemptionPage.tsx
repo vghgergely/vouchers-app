@@ -38,7 +38,7 @@ function VoucherRedemptionPage() {
             voucherRedemptionRequests,
             userRole: selectedUser?.role || 'CLIENT'
         };
-
+    
         redeemVouchers(request)
             .then(response => {
                 const updatedVouchers = response.data as Voucher[];

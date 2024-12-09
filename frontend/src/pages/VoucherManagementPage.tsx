@@ -9,8 +9,6 @@ import VoucherForm, { VoucherCreationProps } from '../components/VoucherForm';
 import VoucherList from '../components/VoucherList';
 import useDelayedState from '../hooks/useDelayedState';
 
-
-
 function VoucherManagementPage() {
   const { reset } = useForm<VoucherCreationProps>();
   const [vouchersToCreate, setVouchersToCreate] = useState<VoucherCreationRequest[]>([]);
