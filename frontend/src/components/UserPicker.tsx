@@ -37,6 +37,7 @@ function UserPicker({className, onError} : UserPickerProps) {
           className="appearance-none border text-center text-sm rounded-lg block w-auto px-7 py-1 bg-blue-500 border-transparent text-white hover:bg-blue-600 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md"
           value={selectedUser?.id}
           onChange={handleChange}
+          data-testid="user-picker-select"
         >
           {users.map((user) => (
             <option className="text-center" key={user.id} value={user.id}>

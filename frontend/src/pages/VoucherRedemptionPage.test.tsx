@@ -1,11 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '../utils/test-utils';
 import VoucherRedemptionPage from './VoucherRedemptionPage';
 import { RootState, setupStore } from '../store';
-import { getAllVouchers, redeemVouchers } from '../api/vouchersApi';
+import { redeemVouchers } from '../api/vouchersApi';
 import { setVouchers } from '../states/voucherSlice';
 import { toggleSelectVoucher } from '../states/voucherSelectionSlice';
 import { EnhancedStore } from '@reduxjs/toolkit';
-import useDelayedState from '../hooks/useDelayedState';
 
 jest.mock('../api/vouchersApi', () => ({
   redeemVouchers: jest.fn().mockResolvedValue({}),
